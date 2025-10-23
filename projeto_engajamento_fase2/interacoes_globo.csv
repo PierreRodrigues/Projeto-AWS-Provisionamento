@@ -1,0 +1,188 @@
+id_conteudo,nome_conteudo,id_usuario,timestamp_interacao,plataforma,tipo_interacao,watch_duration_seconds,comment_text
+1,Jornal Nacional,101,2024-10-20 20:05:12,TV Globo,view_start,1800,
+2,Novela Renascer,102,2024-10-20 21:15:30,Globoplay,view_start,2700,
+3,Podcast Papo de Segunda,103,2024-10-21 10:00:00,Globoplay,view_start,3600,
+3,Podcast Papo de Segunda,104,2024-10-21 10:05:00,Globoplay,comment,,Muito bom o tema de hoje!
+3,Podcast Papo de Segunda,105,2024-10-21 10:10:00,G1,share,,
+4,Jogo do Brasileirão Série A,106,2024-10-21 16:00:00,Premiere,view_start,7200,
+4,Jogo do Brasileirão Série A,107,2024-10-21 17:30:00,GE Globo,comment,,Que jogaço!
+5,Mais Você,108,2024-10-22 09:30:00,TV Globo,view_start,1200,
+6,The Voice Brasil,110,2024-10-22 22:30:00,Globoplay,view_start,3000,
+6,The Voice Brasil,111,2024-10-22 22:35:00,Globoplay,like,,
+6,The Voice Brasil,110,2024-10-23 15:00:00,Globoplay,view_start,3200,
+7,Podcast GE Tabelando,113,2024-10-23 11:00:00,GE Globo,view_start,2400,
+7,Podcast GE Tabelando,114,2024-10-23 11:05:00,GE Globo,comment,,Análise perfeita da rodada.
+7,Podcast GE Tabelando,115,2024-10-23 11:15:00,Spotify,share,,
+7,Podcast GE Tabelando,113,2024-10-23 11:20:00,GE Globo,like,,
+8,Sessão da Tarde Clássicos,116,2024-10-24 15:00:00,TV Globo,view_start,5400,
+9,Show da Virada,117,2024-12-31 23:00:00,TV Globo,view_start,10800,
+10,Documentário Amazônia Viva,118,2024-10-25 22:00:00,Globoplay,view_start,3300,
+10,Documentário Amazônia Viva,119,2024-10-25 22:10:00,Globoplay,like,,
+11,Receitas da Ana Maria,120,2024-10-26 10:00:00,Receitas Gshow,view_start,600,
+12,Futebol de Sabado,122,2024-10-26 16:30:00,Sportv Play,view_start,7000,
+12,Futebol de Sabado,123,2024-10-26 17:00:00,Sportv Play,comment,,Esse narrador é demais!
+13,Desenrola Brasil Podcast,124,2024-10-27 08:00:00,G1,view_start,1800,
+13,Desenrola Brasil Podcast,125,2024-10-27 08:15:00,G1,comment,,Ótimas dicas financeiras.
+14,Globo Repórter Especial,126,2024-10-27 23:00:00,TV Globo,view_start,3600,
+15,Domingão com Huck,127,2024-10-28 18:00:00,TV Globo,view_start,7200,
+15,Domingão com Huck,128,2024-10-28 19:00:00,Globoplay,like,,
+6,The Voice Brasil,129,2024-10-29 22:30:00,Globoplay,view_start,3100,
+6,The Voice Brasil,131,2024-10-29 22:50:00,Globoplay,share,,
+1,Jornal Nacional,132,2024-10-21 20:03:00,TV Globo,view_start,1850,
+2,Novela Renascer,133,2024-10-21 21:10:15,Globoplay,view_start,2750,
+3,Podcast Papo de Segunda,134,2024-10-22 10:02:30,Globoplay,comment,,Adorei a discussão! Concordo plenamente.
+3,Podcast Papo de Segunda,135,2024-10-22 10:08:45,G1,like,,
+4,Jogo do Brasileirão Série A,136,2024-10-22 16:05:50,Premiere,view_start,7250,
+4,Jogo do Brasileirão Série A,137,2024-10-22 17:35:10,GE Globo,comment,,VAR polêmico de novo...
+5,Mais Você,138,2024-10-23 09:32:20,TV Globo,view_start,1250,
+6,The Voice Brasil,139,2024-10-23 22:33:00,Globoplay,view_start,3500,
+6,The Voice Brasil,140,2024-10-23 22:38:40,TV Globo,like,,
+6,The Voice Brasil,141,2024-10-24 15:03:15,Globoplay,view_start,3300,
+7,Podcast GE Tabelando,142,2024-10-24 11:02:00,GE Globo,comment,,Faltou falar do meu time!
+7,Podcast GE Tabelando,143,2024-10-24 11:07:50,Spotify,view_start,2450,
+8,Sessão da Tarde Clássicos,144,2024-10-25 15:05:30,TV Globo,view_start,5450,
+9,Show da Virada,145,2025-01-01 00:01:00,Globoplay,view_start,10850,
+10,Documentário Amazônia Viva,146,2024-10-26 22:03:20,Globoplay,share,,
+11,Receitas da Ana Maria,147,2024-10-27 10:02:10,Receitas Gshow,view_start,650,
+12,Futebol de Sabado,148,2024-10-27 16:33:00,Sportv Play,comment,,Gol anulado injustamente!
+13,Desenrola Brasil Podcast,149,2024-10-28 08:05:40,G1,like,,
+14,Globo Repórter Especial,150,2024-10-28 23:02:55,TV Globo,view_start,3650,
+15,Domingão com Huck,151,2024-10-29 18:05:00,Globoplay,comment,,Que história emocionante!
+6,The Voice Brasil,152,2024-10-30 22:31:00,Globoplay,view_start,2900,
+1,Jornal Nacional,154,2024-10-22 20:01:00,TV Globo,view_start,1750,
+2,Novela Renascer,155,2024-10-22 21:12:45,Globoplay,like,,
+3,Podcast Papo de Segunda,156,2024-10-23 10:07:10,Globoplay,view_start,3620,
+4,Jogo do Brasileirão Série A,157,2024-10-23 16:03:30,Premiere,share,,
+6,The Voice Brasil,159,2024-10-24 22:36:20,Globoplay,view_start,3050,
+6,The Voice Brasil,160,2024-10-24 22:40:00,TV Globo,comment,,Essa candidata é incrível!
+7,Podcast GE Tabelando,161,2024-10-25 11:04:40,GE Globo,view_start,2350,
+7,Podcast GE Tabelando,162,2024-10-25 11:09:30,Spotify,comment,,Melhor podcast de futebol, sem clubismo.
+8,Sessão da Tarde Clássicos,163,2024-10-26 15:08:10,TV Globo,like,,
+10,Documentário Amazônia Viva,164,2024-10-27 22:06:00,Globoplay,view_start,3350,
+12,Futebol de Sabado,165,2024-10-28 16:36:50,Sportv Play,view_start,7050,
+13,Desenrola Brasil Podcast,166,2024-10-29 08:08:20,G1,view_start,1820,
+15,Domingão com Huck,167,2024-10-30 18:03:40,TV Globo,view_start,7220,
+6,The Voice Brasil,168,2024-10-31 22:33:50,Globoplay,view_start,3150,
+6,The Voice Brasil,169,2024-10-31 22:48:25,TV Globo,like,,
+1,Jornal Nacional,170,2024-10-23 20:06:15,G1,view_start,1810,
+2,Novela Renascer,171,2024-10-23 21:18:00,Globoplay,view_start,2710,
+3,Podcast Papo de Segunda,172,2024-10-24 10:10:05,Globoplay,share,,
+4,Jogo do Brasileirão Série A,173,2024-10-24 16:08:40,GE Globo,comment,,Resultado justo.
+6,The Voice Brasil,174,2024-10-25 22:39:30,Globoplay,view_start,3400,
+7,Podcast GE Tabelando,176,2024-10-26 11:08:15,GE Globo,like,,
+7,Podcast GE Tabelando,177,2024-10-26 11:12:00,Spotify,comment,,Concordo com a análise do comentarista X.
+12,Futebol de Sabado,179,2024-10-29 16:39:30,Premiere,view_start,7100,
+14,Globo Repórter Especial,180,2024-10-29 23:05:20,Globoplay,share,,
+6,The Voice Brasil,181,2024-11-01 22:30:10,Globoplay,view_start,2950,
+6,The Voice Brasil,182,2024-11-01 22:45:50,TV Globo,comment,,Torcendo muito!
+1,Jornal Nacional,183,2024-10-24 20:02:50,TV Globo,view_start,1830,
+2,Novela Renascer,184,2024-10-24 21:14:20,Globoplay,comment,,Que capítulo emocionante!
+3,Podcast Papo de Segunda,185,2024-10-25 10:04:30,G1,view_start,3580,
+4,Jogo do Brasileirão Série A,186,2024-10-25 16:01:00,Sportv Play,view_start,7150,
+5,Mais Você,187,2024-10-26 09:38:00,TV Globo,view_start,1220,
+6,The Voice Brasil,188,2024-10-26 22:32:40,Globoplay,view_start,3250,
+6,The Voice Brasil,189,2024-10-26 22:37:15,Globoplay,like,,
+7,Podcast GE Tabelando,190,2024-10-27 11:01:50,GE Globo,comment,,Finalmente uma análise imparcial!
+8,Sessão da Tarde Clássicos,191,2024-10-27 15:02:30,TV Globo,view_start,5350,
+10,Documentário Amazônia Viva,192,2024-10-28 22:08:45,Globoplay,view_start,3280,
+12,Futebol de Sabado,193,2024-10-30 16:42:10,GE Globo,comment,,Esse time precisa melhorar muito.
+13,Desenrola Brasil Podcast,194,2024-10-30 08:10:00,Spotify,view_start,1780,
+15,Domingão com Huck,195,2024-10-31 18:07:20,TV Globo,share,,
+6,The Voice Brasil,196,2024-11-02 22:35:00,Globoplay,view_start,3020,
+1,Jornal Nacional,198,2024-10-25 20:04:00,Canal Brasil,view_start,1780,
+2,Novela Renascer,199,2024-10-25 21:16:50,Viva,view_start,2730,
+3,Podcast Papo de Segunda,200,2024-10-26 10:06:20,Multishow,comment,,Debate necessário.
+4,Jogo do Brasileirão Série A,201,2024-10-26 16:04:15,GNT Play,view_start,7180,
+6,The Voice Brasil,202,2024-10-27 22:31:50,TV Globo,view_start,3320,
+7,Podcast GE Tabelando,203,2024-10-28 11:03:00,App Cartola,comment,,Dicas valiosas pro Cartola!
+15,Domingão com Huck,204,2024-11-01 18:01:30,Globoplay,like,,
+6,The Voice Brasil,205,2024-11-03 22:38:10,Globoplay,view_start,3120,
+6,The Voice Brasil,206,2024-11-03 22:41:40,TV Globo,share,,
+7,Podcast GE Tabelando,207,2024-10-29 11:06:00,GE Globo,view_start,2420,
+7,Podcast GE Tabelando,208,2024-10-29 11:10:30,Spotify,comment,,Amo esse podcast! Não perco um.
+3,Podcast Papo de Segunda,209,2024-10-30 10:12:15,Globoplay,like,,
+6,The Voice Brasil,210,2024-11-04 22:30:00,Globoplay,view_start,3550,
+6,The Voice Brasil,211,2024-11-04 22:35:00,Globoplay,comment,,Melhor apresentação da noite!
+4,Jogo do Brasileirão Série A,212,2024-10-30 16:10:00,Premiere,comment,,Juiz ladrão!
+12,Futebol de Sabado,213,2024-11-02 16:30:00,Sportv Play,view_start,6900,
+12,Futebol de Sabado,214,2024-11-02 17:00:00,Sportv Play,comment,,Que golaço!!!
+6,The Voice Brasil,215,2024-11-05 22:30:00,TV Globo,view_start,3000,
+6,The Voice Brasil,216,2024-11-05 22:32:00,Globoplay,like,,
+7,Podcast GE Tabelando,217,2024-10-31 11:00:00,GE Globo,view_start,2500,
+7,Podcast GE Tabelando,218,2024-10-31 11:05:00,Spotify,comment,,Análise tática impecável.
+3,Podcast Papo de Segunda,219,2024-11-01 10:00:00,G1,view_start,3400,
+3,Podcast Papo de Segunda,220,2024-11-01 10:05:00,Globoplay,comment,,Esse tema me fez refletir muito.
+6,The Voice Brasil,221,2024-11-06 22:30:00,Globoplay,view_start,3200,
+4,Jogo do Brasileirão Série A,223,2024-11-02 16:00:00,Premiere,view_start,7200,
+4,Jogo do Brasileirão Série A,224,2024-11-02 17:30:00,GE Globo,comment,,Meu time ganhou! Uhul!
+12,Futebol de Sabado,225,2024-11-03 16:30:00,Sportv Play,like,,
+7,Podcast GE Tabelando,226,2024-11-02 11:00:00,GE Globo,comment,,Não concordo com a escalação ideal.
+6,The Voice Brasil,227,2024-11-07 22:30:00,Globoplay,view_start,3100,
+1,Jornal Nacional,228,2024-10-26 20:05:12,TV Globo,view_start,1800,
+2,Novela Renascer,229,2024-10-26 21:15:30,Globoplay,view_start,2700,
+3,Podcast Papo de Segunda,230,2024-10-27 10:00:00,Globoplay,view_start,3600,
+3,Podcast Papo de Segunda,231,2024-10-27 10:05:00,Globoplay,comment,,Excelente ponto de vista.
+4,Jogo do Brasileirão Série A,232,2024-10-27 16:00:00,Premiere,view_start,7200,
+5,Mais Você,233,2024-10-28 09:30:00,TV Globo,view_start,1200,
+6,The Voice Brasil,234,2024-10-28 22:30:00,Globoplay,view_start,3000,
+6,The Voice Brasil,235,2024-10-28 22:35:00,Globoplay,like,,
+7,Podcast GE Tabelando,236,2024-10-29 11:00:00,GE Globo,view_start,2400,
+7,Podcast GE Tabelando,237,2024-10-29 11:05:00,GE Globo,comment,,Esse podcast é essencial.
+8,Sessão da Tarde Clássicos,238,2024-10-30 15:00:00,TV Globo,view_start,5400,
+10,Documentário Amazônia Viva,239,2024-10-31 22:00:00,Globoplay,view_start,3300,
+12,Futebol de Sabado,241,2024-11-01 16:30:00,Sportv Play,view_start,7000,
+13,Desenrola Brasil Podcast,242,2024-11-02 08:00:00,G1,comment,,Aprendi muito!
+14,Globo Repórter Especial,243,2024-11-02 23:00:00,TV Globo,view_start,3600,
+15,Domingão com Huck,244,2024-11-03 18:00:00,TV Globo,view_start,7200,
+6,The Voice Brasil,245,2024-11-04 22:30:00,Globoplay,view_start,3100,
+1,Jornal Nacional,247,2024-10-27 20:03:00,TV Globo,view_start,1850,
+2,Novela Renascer,248,2024-10-27 21:10:15,Globoplay,share,,
+3,Podcast Papo de Segunda,249,2024-10-28 10:02:30,Globoplay,comment,,Poderiam trazer o fulano para debater.
+4,Jogo do Brasileirão Série A,250,2024-10-28 16:05:50,Premiere,like,,
+6,The Voice Brasil,251,2024-10-29 22:33:00,Globoplay,view_start,3500,
+7,Podcast GE Tabelando,252,2024-10-30 11:02:00,GE Globo,comment,,Informação de qualidade.
+6,The Voice Brasil,253,2024-11-08 22:30:00,TV Globo,view_start,2980,
+6,The Voice Brasil,254,2024-11-08 22:33:00,Globoplay,like,,
+7,Podcast GE Tabelando,255,2024-11-03 11:00:00,Spotify,view_start,2480,
+7,Podcast GE Tabelando,256,2024-11-03 11:04:00,GE Globo,comment,,Os melhores comentaristas estão aqui.
+3,Podcast Papo de Segunda,257,2024-11-04 10:15:00,G1,share,,
+6,The Voice Brasil,258,2024-11-09 22:30:00,Globoplay,view_start,3600,
+6,The Voice Brasil,259,2024-11-09 22:36:00,Globoplay,comment,,Arrasou na performance!
+4,Jogo do Brasileirão Série A,260,2024-11-03 16:10:00,Premiere,comment,,Foi pênalti claro!
+12,Futebol de Sabado,261,2024-11-04 16:30:00,Sportv Play,view_start,6950,
+12,Futebol de Sabado,262,2024-11-04 17:05:00,Sportv Play,comment,,Que defesaça do goleiro!
+6,The Voice Brasil,263,2024-11-10 22:30:00,TV Globo,view_start,3050,
+7,Podcast GE Tabelando,264,2024-11-05 11:00:00,GE Globo,view_start,2520,
+7,Podcast GE Tabelando,265,2024-11-05 11:06:00,Spotify,comment,,Podcast indispensável para quem ama futebol.
+3,Podcast Papo de Segunda,266,2024-11-06 10:00:00,Globoplay,view_start,3450,
+3,Podcast Papo de Segunda,267,2024-11-06 10:07:00,Globoplay,comment,,Assunto super relevante para os dias atuais.
+6,The Voice Brasil,268,2024-11-11 22:30:00,Globoplay,view_start,3250,
+4,Jogo do Brasileirão Série A,270,2024-11-05 16:00:00,Premiere,view_start,7250,
+4,Jogo do Brasileirão Série A,271,2024-11-05 17:35:00,GE Globo,comment,,Esse técnico precisa ser demitido!
+7,Podcast GE Tabelando,272,2024-11-06 11:00:00,GE Globo,comment,,Só verdades foram ditas.
+6,The Voice Brasil,273,2024-11-12 22:30:00,Globoplay,view_start,3150,
+1,Jornal Nacional,274,2024-10-28 20:05:12,TV Globo,view_start,1800,
+2,Novela Renascer,275,2024-10-28 21:15:30,Globoplay,view_start,2700,
+3,Podcast Papo de Segunda,276,2024-10-29 10:00:00,Globoplay,view_start,3600,
+3,Podcast Papo de Segunda,277,2024-10-29 10:05:00,Globoplay,comment,,Convidem mais especialistas no assunto.
+4,Jogo do Brasileirão Série A,278,2024-10-29 16:00:00,Premiere,view_start,7200,
+5,Mais Você,279,2024-10-30 09:30:00,TV Globo,view_start,1200,
+6,The Voice Brasil,280,2024-10-30 22:30:00,Globoplay,view_start,3000,
+6,The Voice Brasil,281,2024-10-30 22:35:00,Globoplay,like,,
+7,Podcast GE Tabelando,282,2024-10-31 11:00:00,GE Globo,view_start,2400,
+7,Podcast GE Tabelando,283,2024-10-31 11:05:00,GE Globo,comment,,Acompanho toda semana.
+8,Sessão da Tarde Clássicos,284,2024-11-01 15:00:00,TV Globo,view_start,5400,
+10,Documentário Amazônia Viva,285,2024-11-02 22:00:00,Globoplay,view_start,3300,
+12,Futebol de Sabado,287,2024-11-03 16:30:00,Sportv Play,view_start,7000,
+13,Desenrola Brasil Podcast,288,2024-11-04 08:00:00,G1,comment,,Muito útil, obrigado!
+14,Globo Repórter Especial,289,2024-11-04 23:00:00,TV Globo,view_start,3600,
+15,Domingão com Huck,290,2024-11-05 18:00:00,TV Globo,view_start,7200,
+6,The Voice Brasil,291,2024-11-06 22:30:00,Globoplay,view_start,3100,
+1,Jornal Nacional,293,2024-10-29 20:03:00,TV Globo,view_start,1850,
+2,Novela Renascer,294,2024-10-29 21:10:15,Globoplay,share,,
+3,Podcast Papo de Segunda,295,2024-10-30 10:02:30,Globoplay,comment,,Sempre com temas pertinentes.
+4,Jogo do Brasileirão Série A,296,2024-10-30 16:05:50,Premiere,like,,
+6,The Voice Brasil,297,2024-10-31 22:33:00,Globoplay,view_start,3500,
+7,Podcast GE Tabelando,298,2024-11-01 11:02:00,GE Globo,comment,,Melhor análise esportiva da internet.
+6,The Voice Brasil,299,2024-11-13 22:30:00,TV Globo,view_start,2980,
+6,The Voice Brasil,300,2024-11-13 22:33:00,Globoplay,like,,
