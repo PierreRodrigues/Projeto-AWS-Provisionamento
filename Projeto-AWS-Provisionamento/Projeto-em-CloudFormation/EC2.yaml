@@ -1,71 +1,58 @@
-## EC2 (recebe só do ALB e SSH do seu IP)
-resource "aws_security_group" "ec2_sg" {
-  name        = "SG-EC2"
-  description = "Permite tráfego apenas do ALB e SSH local"
-  vpc_id      = aws_vpc.main.id
+Resources:
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: SG-EC2
+      GroupDescription: Permite tráfego apenas do ALB e SSH local
+      VpcId: !Ref MainVPC
+      SecurityGroupIngress:
+        - Description: HTTP do Load Balancer
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          SourceSecurityGroupId: !Ref ALBSecurityGroup
+        - Description: SSH do IP local
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: YOUR_PUBLIC_IP/32  # Substitua pelo seu IP
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: 0
+          ToPort: 0
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: SG-EC2
 
-  ingress {
-    description = "HTTP do Load Balancer"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    security_groups = [aws_security_group.alb_sg.id]
-  }
+  WebLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: LT-WebServer
+      LaunchTemplateData:
+        ImageId: !Ref AmazonLinuxAMI
+        InstanceType: t2.micro
+        KeyName: !Ref KeyPairName
+        SecurityGroupIds:
+          - !Ref EC2SecurityGroup
+        UserData: !Base64 |
+          #!/bin/bash
+          # Substitua pelo conteúdo do seu script userdata.sh
+        TagSpecifications:
+          - ResourceType: instance
+            Tags:
+              - Key: Name
+                Value: WebServer
 
-  ingress {
-    description = "SSH do IP local"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["YOUR_PUBLIC_IP/32"] # <== TROQUE PELO SEU IP
-  }
+  AmazonLinuxAMI:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = { Name = "SG-EC2" }
-}
-
-# === Launch Template (modelo das instâncias) ===
-resource "aws_launch_template" "web_template" {
-  name_prefix   = "LT-WebServer"
-  image_id      = data.aws_ami.amazon_linux.id
-  instance_type = "t2.micro"
-  key_name      = var.key_pair_name
-  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
-
-  user_data = filebase64("${path.module}/userdata.sh")
-
-  tag_specifications {
-    resource_type = "instance"
-    tags = {
-      Name = "WebServer"
-    }
-  }
-}
-
-# === Pegar a AMI mais recente Amazon Linux 2 ===
-data "aws_ami" "amazon_linux" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
-  }
-}
-
-# === Target Group ===
-resource "aws_lb_target_group" "web_tg" {
-  name     = "TG-Web"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.main.id
-  health_check {
-    path = "/"
-  }
-}
+  WebTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: TG-Web
+      Port: 80
+      Protocol: HTTP
+      VpcId: !Ref MainVPC
+      HealthCheckPath: /

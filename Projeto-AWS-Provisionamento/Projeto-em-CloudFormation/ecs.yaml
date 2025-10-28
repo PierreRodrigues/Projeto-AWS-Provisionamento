@@ -103,8 +103,8 @@ Resources:
       RequiresCompatibilities:
         - EC2
       ContainerDefinitions:
-        - Name: nginx-container
-          Image: nginx:1.28
+        - Name: nginx-container  ## Aqui para subir a aplicação que vamos escolher
+          Image: nginxdemos/hello
           Cpu: 256
           Memory: 256
           PortMappings:
@@ -113,7 +113,10 @@ Resources:
             Protocol: tcp
   MyECSService:
     Type: AWS::ECS::Service
-    DependsOn: MyECSInstance
+    DependsOn: ["WebAutoScalingGroup", "ScaleByCPU", "EC2SecurityGroup", " WebLaunchTemplate",
+    "AmazonLinuxAMI", "WebTargetGroup", "ALBSecurityGroup", "MainVPC", "PublicSubnetA", "PublicSubnetB",
+    "InternetGateway", "AttachGateway", "PublicRouteTable", "DefaultRoute", "SubnetARouteTableAssociation",
+    "SubnetBRouteTableAssociation","WebLoadBalancer", "HTTPListener"]
     Properties:
       Cluster: !Ref MyECSCluster
       DesiredCount: 1
