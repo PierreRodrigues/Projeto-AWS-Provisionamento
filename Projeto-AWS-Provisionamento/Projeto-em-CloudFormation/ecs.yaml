@@ -1,95 +1,148 @@
 Parameters:
-  KeyName:
-    Type: AWS::EC2::KeyPair::KeyName
-    Description: Nome do par de chaves EC2
-  VpcId:
-    Type: AWS::EC2::VPC::Id
-  SubnetId:
-    Type: AWS::EC2::Subnet::Id
-  CidrIp:
-    Type: String
-    Default: 0.0.0.0/0
-  InstanceType:
-    Type: String
-    Default: t3.small
-  AmiId:
-    Type: String
-    Default: ami-080e1f13689e07408 # Ubuntu 20.04 LTS - us-east-1
-Resources:
-  MyECSCluster:
-    Type: AWS::ECS::Cluster
+  MainVPC:
+    Type: AWS::EC2::VPC
     Properties:
-      ClusterName: MyECSCluster
-  MySecurityGroup:
+      CidrBlock: 10.0.0.0/16
+      Tags:
+        - Key: Name
+          Value: VPC-HighAvailability
+
+  PublicSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: us-east-1a
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: Subnet-A
+
+  PublicSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVPC
+      CidrBlock: 10.0.2.0/24
+      AvailabilityZone: us-east-1b
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: Subnet-B
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: IGW-HighAvailability
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MainVPC
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MainVPC
+      Tags:
+        - Key: Name
+          Value: RT-Public
+
+  DefaultRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  SubnetARouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnetA
+      RouteTableId: !Ref PublicRouteTable
+
+  SubnetBRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnetB
+      RouteTableId: !Ref PublicRouteTable
+
+Resources:
+  WebAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      DesiredCapacity: 2
+      MaxSize: 4
+      MinSize: 2
+      VPCZoneIdentifier:
+        - !Ref PublicSubnetA
+        - !Ref PublicSubnetB
+      TargetGroupARNs:
+        - !Ref WebTargetGroup
+      LaunchTemplate:
+        LaunchTemplateId: !Ref WebLaunchTemplate
+        Version: "$Latest"
+      Tags:
+        - Key: Name
+          Value: ASG-WebServer
+          PropagateAtLaunch: true
+
+  ScaleByCPU:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AutoScalingGroupName: !Ref WebAutoScalingGroup
+      PolicyType: TargetTrackingScaling
+      TargetTrackingConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ASGAverageCPUUtilization
+        TargetValue: 50.0
+  WebLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: ALB-Web
+      Scheme: internet-facing
+      Type: application
+      SecurityGroups:
+        - !Ref ALBSecurityGroup
+      Subnets:
+        - !Ref PublicSubnetA
+        - !Ref PublicSubnetB
+      Tags:
+        - Key: Name
+          Value: ALB-Web
+
+  HTTPListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref WebLoadBalancer
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref WebTargetGroup
+
+            ALBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Permite SSH e HTTP
-      VpcId: !Ref VpcId
+      GroupName: SG-ALB
+      GroupDescription: Permite HTTP público
+      VpcId: !Ref MainVPC
       SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          CidrIp: !Ref CidrIp
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-          CidrIp: !Ref CidrIp
-  MyECSInstance:
-    Type: AWS::EC2::Instance
-    Properties:
-      ImageId: !Ref AmiId
-      InstanceType: !Ref InstanceType
-      KeyName: !Ref KeyName
-      IamInstanceProfile: !Ref ECSInstanceProfile
-      SecurityGroupIds:
-        - !Ref MySecurityGroup
-      SubnetId: !Ref SubnetId
-      UserData:
-        Fn::Base64: !Sub |
-          #!/bin/bash
-          set -xe
-          apt update -y
-          apt install -y docker.io awscli curl
-          systemctl enable docker
-          systemctl start docker
-
-          mkdir -p /etc/ecs
-          echo "ECS_CLUSTER=${MyECSCluster}" > /etc/ecs/ecs.config
-          echo "ECS_AVAILABLE_LOGGING_DRIVERS=[\"json-file\",\"awslogs\"]" >> /etc/ecs/ecs.config
-          echo "ECS_ENABLE_TASK_IAM_ROLE=true" >> /etc/ecs/ecs.config
-          echo "ECS_ENABLE_TASK_ENI=true" >> /etc/ecs/ecs.config
-
-          docker run --name ecs-agent --detach --restart=always \
-            --volume=/var/run/docker.sock:/var/run/docker.sock \
-            --volume=/var/lib/ecs/data:/data \
-            --volume=/etc/ecs:/etc/ecs \
-            --volume=/var/log/ecs/:/log \
-            --network=host \
-            -e ECS_DATADIR=/data \
-            -e ECS_LOGFILE=/log/ecs-agent.log \
-            -e ECS_LOGLEVEL=info \
-            -e ECS_CLUSTER=${MyECSCluster} \
-            -e ECS_AVAILABLE_LOGGING_DRIVERS='["json-file","awslogs"]' \
-            -e AWS_REGION=us-east-1 \
-            amazon/amazon-ecs-agent:latest
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: 0
+          ToPort: 0
+          CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
-          Value: MyECSInstance
-
-  ECSInstanceRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - ec2.amazonaws.com
-            Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
-
+          Value: SG-ALB
+          
   ECSInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:

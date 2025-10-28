@@ -1,4 +1,4 @@
-Resources:
+Parameters:
   MainVPC:
     Type: AWS::EC2::VPC
     Properties:

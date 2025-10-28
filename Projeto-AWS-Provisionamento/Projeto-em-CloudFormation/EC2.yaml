@@ -11,7 +11,7 @@ Resources:
           FromPort: 80
           ToPort: 80
           SourceSecurityGroupId: !Ref ALBSecurityGroup
-        - Description: SSH do IP local
+        - Description: SSH e HTTP do meu IP
           IpProtocol: tcp
           FromPort: 22
           ToPort: 22
