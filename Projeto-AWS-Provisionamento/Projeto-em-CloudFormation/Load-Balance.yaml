@@ -1,24 +1,23 @@
+Resources:
   WebLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: ALB-Web
-      Scheme: internet-facing
-      Type: application
-      SecurityGroups:
-        - !Ref ALBSecurityGroup
+      Name: WebLoadBalancer
       Subnets:
         - !Ref PublicSubnetA
         - !Ref PublicSubnetB
-      Tags:
-        - Key: Name
-          Value: ALB-Web
+      SecurityGroups:
+        - !Ref ALBSecurityGroup
+      Scheme: internet-facing
+      Type: application
 
-  HTTPListener:
-    Type: AWS::ElasticLoadBalancingV2::Listener
+  ALBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
     Properties:
-      LoadBalancerArn: !Ref WebLoadBalancer
-      Port: 80
-      Protocol: HTTP
-      DefaultActions:
-        - Type: forward
-          TargetGroupArn: !Ref WebTargetGroup
+      GroupDescription: Allow HTTP access
+      VpcId: !Ref MainVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0

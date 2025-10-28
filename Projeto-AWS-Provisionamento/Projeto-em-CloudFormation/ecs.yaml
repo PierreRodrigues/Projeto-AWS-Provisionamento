@@ -1,4 +1,40 @@
 Parameters:
+  KeyPairName:
+    Type: String
+    Default: my-keypair
+    Description: Nome do par de chaves EC2 para acesso SSH
+
+  MyECSCluster:
+    Type: String
+    Default: default
+    Description: Nome do cluster ECS existente
+
+  AmazonLinuxAMI:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+
+Resources:
+  ECSInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ECSInstanceRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+
+  ECSInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref ECSInstanceRole
+
   MainVPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -69,7 +105,107 @@ Parameters:
       SubnetId: !Ref PublicSubnetB
       RouteTableId: !Ref PublicRouteTable
 
-Resources:
+  ALBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: SG-ALB
+      GroupDescription: Allow public HTTP
+      VpcId: !Ref MainVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: 0
+          ToPort: 0
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: SG-ALB
+
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: SG-EC2
+      GroupDescription: Allow HTTP from ALB and public SSH
+      VpcId: !Ref MainVPC
+      SecurityGroupIngress:
+        - Description: HTTP from Load Balancer
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          SourceSecurityGroupId: !Ref ALBSecurityGroup
+        - Description: SSH from anywhere (not recommended for production)
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: 0
+          ToPort: 0
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: SG-EC2
+
+  WebTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: TG-Web
+      Port: 80
+      Protocol: HTTP
+      VpcId: !Ref MainVPC
+      HealthCheckPath: /
+
+  WebLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: ALB-Web
+      Scheme: internet-facing
+      Type: application
+      SecurityGroups:
+        - !Ref ALBSecurityGroup
+      Subnets:
+        - !Ref PublicSubnetA
+        - !Ref PublicSubnetB
+      Tags:
+        - Key: Name
+          Value: ALB-Web
+
+  HTTPListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref WebLoadBalancer
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref WebTargetGroup
+
+  WebLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: LT-WebServer
+      LaunchTemplateData:
+        ImageId: !Ref AmazonLinuxAMI
+        InstanceType: t2.micro
+        KeyName: !Ref KeyPairName
+        SecurityGroupIds:
+          - !Ref EC2SecurityGroup
+        IamInstanceProfile:
+          Name: !Ref ECSInstanceProfile
+        UserData: !Base64 |
+          #!/bin/bash
+          echo "Hello from user-data script"
+        TagSpecifications:
+          - ResourceType: instance
+            Tags:
+              - Key: Name
+                Value: WebServer
+
   WebAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
@@ -98,56 +234,7 @@ Resources:
         PredefinedMetricSpecification:
           PredefinedMetricType: ASGAverageCPUUtilization
         TargetValue: 50.0
-  WebLoadBalancer:
-    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-    Properties:
-      Name: ALB-Web
-      Scheme: internet-facing
-      Type: application
-      SecurityGroups:
-        - !Ref ALBSecurityGroup
-      Subnets:
-        - !Ref PublicSubnetA
-        - !Ref PublicSubnetB
-      Tags:
-        - Key: Name
-          Value: ALB-Web
 
-  HTTPListener:
-    Type: AWS::ElasticLoadBalancingV2::Listener
-    Properties:
-      LoadBalancerArn: !Ref WebLoadBalancer
-      Port: 80
-      Protocol: HTTP
-      DefaultActions:
-        - Type: forward
-          TargetGroupArn: !Ref WebTargetGroup
-
-            ALBSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupName: SG-ALB
-      GroupDescription: Permite HTTP público
-      VpcId: !Ref MainVPC
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-      SecurityGroupEgress:
-        - IpProtocol: -1
-          FromPort: 0
-          ToPort: 0
-          CidrIp: 0.0.0.0/0
-      Tags:
-        - Key: Name
-          Value: SG-ALB
-          
-  ECSInstanceProfile:
-    Type: AWS::IAM::InstanceProfile
-    Properties:
-      Roles:
-        - !Ref ECSInstanceRole
   MyTaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
@@ -156,25 +243,41 @@ Resources:
       RequiresCompatibilities:
         - EC2
       ContainerDefinitions:
-        - Name: nginx-container  ## Aqui para subir a aplicação que vamos escolher
+        - Name: nginx-container
           Image: nginxdemos/hello
           Cpu: 256
           Memory: 256
           PortMappings:
-          - ContainerPort: 80
-            HostPort: 80
-            Protocol: tcp
+            - ContainerPort: 80
+              HostPort: 80
+              Protocol: tcp
+
   MyECSService:
     Type: AWS::ECS::Service
-    DependsOn: ["WebAutoScalingGroup", "ScaleByCPU", "EC2SecurityGroup", " WebLaunchTemplate",
-    "AmazonLinuxAMI", "WebTargetGroup", "ALBSecurityGroup", "MainVPC", "PublicSubnetA", "PublicSubnetB",
-    "InternetGateway", "AttachGateway", "PublicRouteTable", "DefaultRoute", "SubnetARouteTableAssociation",
-    "SubnetBRouteTableAssociation","WebLoadBalancer", "HTTPListener"]
+    DependsOn:
+      - WebAutoScalingGroup
+      - ScaleByCPU
+      - EC2SecurityGroup
+      - WebLaunchTemplate
+      - WebTargetGroup
+      - ALBSecurityGroup
+      - MainVPC
+      - PublicSubnetA
+      - PublicSubnetB
+      - InternetGateway
+      - AttachGateway
+      - PublicRouteTable
+      - DefaultRoute
+      - SubnetARouteTableAssociation
+      - SubnetBRouteTableAssociation
+      - WebLoadBalancer
+      - HTTPListener
     Properties:
       Cluster: !Ref MyECSCluster
       DesiredCount: 1
       LaunchType: EC2
-      TaskDefinition: !Ref MyTaskDefinition 
+      TaskDefinition: !Ref MyTaskDefinition
+
 Outputs:
   ClusterName:
     Description: Nome do cluster ECS
