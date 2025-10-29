@@ -1,23 +1,45 @@
-Resources:
-  WebLoadBalancer:
+WebLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: WebLoadBalancer
+      Name: ALB-Web
+      Scheme: internet-facing
+      Type: application
+      SecurityGroups:
+        - !Ref ALBSecurityGroup
       Subnets:
         - !Ref PublicSubnetA
         - !Ref PublicSubnetB
-      SecurityGroups:
-        - !Ref ALBSecurityGroup
-      Scheme: internet-facing
-      Type: application
+      Tags:
+        - Key: Name
+          Value: ALB-Web
 
-  ALBSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
+  HTTPListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
-      GroupDescription: Allow HTTP access
-      VpcId: !Ref MainVPC
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
+      LoadBalancerArn: !Ref WebLoadBalancer
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref WebTargetGroup
+
+  WebLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: LT-WebServer
+      LaunchTemplateData:
+        ImageId: !Ref AmazonLinuxAMI
+        InstanceType: t2.micro
+        KeyName: !Ref KeyPairName
+        SecurityGroupIds:
+          - !Ref EC2SecurityGroup
+        IamInstanceProfile:
+          Name: !Ref ECSInstanceProfile
+        UserData: !Base64 |
+          #!/bin/bash
+          echo "Hello from user-data script"
+        TagSpecifications:
+          - ResourceType: instance
+            Tags:
+              - Key: Name
+                Value: WebServer

@@ -1,58 +1,36 @@
-Resources:
-  EC2SecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupName: SG-EC2
-      GroupDescription: Permite tráfego apenas do ALB e SSH local
-      VpcId: !Ref MainVPC
-      SecurityGroupIngress:
-        - Description: HTTP do Load Balancer
-          IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          SourceSecurityGroupId: !Ref ALBSecurityGroup
-        - Description: SSH e HTTP do meu IP
-          IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          CidrIp: YOUR_PUBLIC_IP/32  # Substitua pelo seu IP
-      SecurityGroupEgress:
-        - IpProtocol: -1
-          FromPort: 0
-          ToPort: 0
-          CidrIp: 0.0.0.0/0
-      Tags:
-        - Key: Name
-          Value: SG-EC2
+Parameters:
+  KeyPairName:
+    Type: String
+    Default: my-keypair
+    Description: Nome do par de chaves EC2 para acesso SSH
 
-  WebLaunchTemplate:
-    Type: AWS::EC2::LaunchTemplate
-    Properties:
-      LaunchTemplateName: LT-WebServer
-      LaunchTemplateData:
-        ImageId: !Ref AmazonLinuxAMI
-        InstanceType: t2.micro
-        KeyName: !Ref KeyPairName
-        SecurityGroupIds:
-          - !Ref EC2SecurityGroup
-        UserData: !Base64 |
-          #!/bin/bash
-          # Substitua pelo conteúdo do seu script userdata.sh
-        TagSpecifications:
-          - ResourceType: instance
-            Tags:
-              - Key: Name
-                Value: WebServer
+  MyECSCluster:
+    Type: String
+    Default: default
+    Description: Nome do cluster ECS existente
 
   AmazonLinuxAMI:
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
 
-  WebTargetGroup:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+Resources:
+  ECSInstanceRole:
+    Type: AWS::IAM::Role
     Properties:
-      Name: TG-Web
-      Port: 80
-      Protocol: HTTP
-      VpcId: !Ref MainVPC
-      HealthCheckPath: /
+      RoleName: ECSInstanceRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+
+  ECSInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref ECSInstanceRole

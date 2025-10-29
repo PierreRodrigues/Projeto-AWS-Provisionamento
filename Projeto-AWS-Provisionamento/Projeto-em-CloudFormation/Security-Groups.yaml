@@ -1,8 +1,8 @@
-  ALBSecurityGroup:
+ALBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: SG-ALB
-      GroupDescription: Permite HTTP público
+      GroupDescription: Allow public HTTP
       VpcId: !Ref MainVPC
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -17,3 +17,38 @@
       Tags:
         - Key: Name
           Value: SG-ALB
+
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: SG-EC2
+      GroupDescription: Allow HTTP from ALB and public SSH
+      VpcId: !Ref MainVPC
+      SecurityGroupIngress:
+        - Description: HTTP from Load Balancer
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          SourceSecurityGroupId: !Ref ALBSecurityGroup
+        - Description: SSH from anywhere (not recommended for production)
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: 0
+          ToPort: 0
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: SG-EC2
+
+  WebTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: TG-Web
+      Port: 80
+      Protocol: HTTP
+      VpcId: !Ref MainVPC
+      HealthCheckPath: /

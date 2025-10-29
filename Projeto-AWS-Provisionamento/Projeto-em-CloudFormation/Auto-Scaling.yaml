@@ -1,5 +1,4 @@
-Resources:
-  WebAutoScalingGroup:
+WebAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       DesiredCapacity: 2
@@ -27,3 +26,46 @@ Resources:
         PredefinedMetricSpecification:
           PredefinedMetricType: ASGAverageCPUUtilization
         TargetValue: 50.0
+
+  MyTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: NginxTask
+      NetworkMode: bridge
+      RequiresCompatibilities:
+        - EC2
+      ContainerDefinitions:
+        - Name: nginx-container
+          Image: nginxdemos/hello
+          Cpu: 256
+          Memory: 256
+          PortMappings:
+            - ContainerPort: 80
+              HostPort: 80
+              Protocol: tcp
+
+  MyECSService:
+    Type: AWS::ECS::Service
+    DependsOn:
+      - WebAutoScalingGroup
+      - ScaleByCPU
+      - EC2SecurityGroup
+      - WebLaunchTemplate
+      - WebTargetGroup
+      - ALBSecurityGroup
+      - MainVPC
+      - PublicSubnetA
+      - PublicSubnetB
+      - InternetGateway
+      - AttachGateway
+      - PublicRouteTable
+      - DefaultRoute
+      - SubnetARouteTableAssociation
+      - SubnetBRouteTableAssociation
+      - WebLoadBalancer
+      - HTTPListener
+    Properties:
+      Cluster: !Ref MyECSCluster
+      DesiredCount: 1
+      LaunchType: EC2
+      TaskDefinition: !Ref MyTaskDefinition
