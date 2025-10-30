@@ -1,7 +1,7 @@
 Parameters:
   KeyPairName:
     Type: String
-    Default: my-keypair
+    Default: aula-chaves-aws
     Description: Nome do par de chaves EC2 para acesso SSH
 
   MyECSCluster:
@@ -14,6 +14,10 @@ Parameters:
     Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
 
 Resources:
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref MyECSCluster
   ECSInstanceRole:
     Type: AWS::IAM::Role
     Properties:
@@ -190,16 +194,41 @@ Resources:
     Properties:
       LaunchTemplateName: LT-WebServer
       LaunchTemplateData:
-        ImageId: !Ref AmazonLinuxAMI
+        ImageId: ami-080e1f13689e07408
         InstanceType: t2.micro
         KeyName: !Ref KeyPairName
         SecurityGroupIds:
           - !Ref EC2SecurityGroup
         IamInstanceProfile:
           Name: !Ref ECSInstanceProfile
-        UserData: !Base64 |
-          #!/bin/bash
-          echo "Hello from user-data script"
+        UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            set -xe
+            apt update -y
+            apt install -y docker.io awscli curl
+            systemctl enable docker
+            systemctl start docker
+
+            mkdir -p /etc/ecs
+            echo "ECS_CLUSTER=${MyECSCluster}" > /etc/ecs/ecs.config
+            echo "ECS_AVAILABLE_LOGGING_DRIVERS=[\"json-file\",\"awslogs\"]" >> /etc/ecs/ecs.config
+            echo "ECS_ENABLE_TASK_IAM_ROLE=true" >> /etc/ecs/ecs.config
+            echo "ECS_ENABLE_TASK_ENI=true" >> /etc/ecs/ecs.config
+
+            docker run --name ecs-agent --detach --restart=always \
+              --volume=/var/run/docker.sock:/var/run/docker.sock \
+              --volume=/var/lib/ecs/data:/data \
+              --volume=/etc/ecs:/etc/ecs \
+              --volume=/var/log/ecs/:/log \
+              --network=host \
+              -e ECS_DATADIR=/data \
+              -e ECS_LOGFILE=/log/ecs-agent.log \
+              -e ECS_LOGLEVEL=info \
+              -e ECS_CLUSTER=${MyECSCluster} \
+              -e ECS_AVAILABLE_LOGGING_DRIVERS='["json-file","awslogs"]' \
+              -e AWS_REGION=us-east-1 \
+              amazon/amazon-ecs-agent:latest
         TagSpecifications:
           - ResourceType: instance
             Tags:
@@ -219,7 +248,7 @@ Resources:
         - !Ref WebTargetGroup
       LaunchTemplate:
         LaunchTemplateId: !Ref WebLaunchTemplate
-        Version: "$Latest"
+        Version: !GetAtt WebLaunchTemplate.LatestVersionNumber
       Tags:
         - Key: Name
           Value: ASG-WebServer

@@ -11,7 +11,7 @@ WebAutoScalingGroup:
         - !Ref WebTargetGroup
       LaunchTemplate:
         LaunchTemplateId: !Ref WebLaunchTemplate
-        Version: "$Latest"
+        Version: !GetAttribute WebLaunchTemplate.LatestVersionNumber
       Tags:
         - Key: Name
           Value: ASG-WebServer
