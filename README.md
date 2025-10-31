@@ -132,3 +132,4 @@ Para provisionar a infraestrutura com Terraform, siga os passos abaixo:
 *   **Pierre Rodrigues**
 *   **Nando Cardoso**
 *   **Maria Silveira**
+*   **Beatriz Oliveira**
